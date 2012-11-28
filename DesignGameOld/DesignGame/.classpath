@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="Source"/>
+	<classpathentry kind="src" path="Resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="Libraries/groupscribbles.jar"/>
+	<classpathentry kind="lib" path="Libraries/tspaces.jar"/>
+	<classpathentry kind="lib" path="Libraries/org.eclipse.jface_3.2.1.M20060908-1000.jar"/>
+	<classpathentry kind="lib" path="Libraries/org.eclipse.equinox.common_3.2.0.v20060603.jar"/>
+	<classpathentry kind="lib" path="Libraries/org.eclipse.core.commands_3.2.0.I20060605-1400.jar"/>
+	<classpathentry kind="lib" path="Libraries/swtmiglayout15.jar"/>
+	<classpathentry kind="lib" path="Libraries/org.eclipse.swt.win32.win32.x86_3.2.1.v3235.jar"/>
+	<classpathentry kind="con" path="SWT_CONTAINER/PLATFORM"/>
+	<classpathentry kind="output" path="Builds/Debug"/>
+</classpath>

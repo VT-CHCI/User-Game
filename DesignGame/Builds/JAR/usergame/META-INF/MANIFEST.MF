@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.7.1
+Created-By: 19.1-b02-334 (Apple Inc.)
+main-class: edu.vt.cs.research.usergame.UserGame
+Class-Path: tspaces.jar groupscribbles.jar jarbundler-1.9.jar org.eclipse.core.commands_3.2.0.I20060605-1400.jar org.eclipse.equinox.common_3.2.0.v20060603.jar org.eclipse.jface_3.2.1.M20060908-1000.jar org.eclipse.swt.cocoa.macosx.x86_64_3.6.1.v3655c.jar org.eclipse.swt.win32.win32.x86_3.6.1.v3655c.jar swtmiglayout15.jar xercesImpl.jar
+

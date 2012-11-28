@@ -1,0 +1,183 @@
+<project name="User Game" default="default">
+
+	<target name="init.basics">
+		<property name="src.dir" value="Source" />
+		<property name="res.dir" value="Resources" />
+		<property name="lib.dir" value="Libraries" />
+		<property name="temp.dir" value="Temp" />
+		<property name="build.dir" value="Builds" />
+		<!-- -->
+		<property name="debug.build.dir" value="${build.dir}/Debug" />
+		<property name="bytecode.build.dir" value="${build.dir}/Bytecode" />
+		<property name="jar.build.dir" value="${build.dir}/JAR" />
+		<property name="release.build.dir" value="${build.dir}/Release" />
+		<!-- -->
+		<property name="jar.file.name" value="usergame.jar" />
+		<property name="jar.file" value="${jar.build.dir}/${jar.file.name}" />
+		<!-- -->
+		<property name="logging.configuration.file.name" value="logging.properties" />
+		<property name="logging.configuration.file" value="${logging.configuration.file.name}" />
+	</target>
+
+
+	<target name="init" depends="init.basics, check.os, init.windows, init.mac.os.x">
+	</target>
+
+	<target name="check.os" depends="init.basics">
+		<condition property="os.is.windows">
+			<equals arg1="${os.name}" arg2="Windows XP" />
+		</condition>
+		<!-- -->
+		<condition property="os.is.mac.os.x">
+			<equals arg1="${os.name}" arg2="Mac OS X" />
+		</condition>
+	</target>
+
+	<target name="init.windows" depends="check.os" if="os.is.windows">
+		<echo>OS is Windows XP</echo>
+		<path id="compile.classpath">
+			<fileset dir="${src.dir}" />
+			<fileset dir="${lib.dir}">
+				<include name="**/*.jar" />
+				<exclude name="**/*carbon*" />
+				<exclude name="jarbundler-*.jar" />
+				<exclude name="xercesImpl.jar" />
+				<exclude name="Launch4j/**" />
+			</fileset>
+		</path>
+		<fileset id="jar.runtime.dependencies" dir="${lib.dir}">
+			<include name="**/*.jar" />
+			<exclude name="**/*carbon*" />
+			<exclude name="jarbundler-*.jar" />
+			<exclude name="xercesImpl.jar" />
+			<exclude name="Launch4j/**" />
+		</fileset>
+		<fileset id="runtime.dependencies" dir="${lib.dir}">
+			<include name="**/*swt*.dll" />
+		</fileset>
+		<property name="manifest.file" value="windows.MANIFEST.MF" />
+		<path id="launch4j.classpath">
+			<fileset dir="${lib.dir}">
+				<include name="**/launch4j.jar" />
+				<include name="**/xstream.jar" />
+			</fileset>
+		</path>
+		<property name="launch4j.config.file" value="windows.launch4j.config.xml" />
+		<property name="release.lib.build.dir.name" value="Libraries" />
+		<property name="release.lib.build.dir" value="${release.build.dir}/${release.lib.build.dir.name}" />
+		<property name="exe.file.name" value="User Game.exe" />
+		<property name="exe.icon.file" value="User Game.ico" />
+		<property name="exe.file" value="${release.build.dir}/${exe.file.name}" />
+	</target>
+
+	<target name="init.mac.os.x" depends="check.os" if="os.is.mac.os.x">
+		<echo>OS is Mac OS X</echo>
+		<path id="compile.classpath">
+			<fileset dir="${src.dir}" />
+			<fileset dir="${lib.dir}">
+				<include name="**/*.jar" />
+				<exclude name="**/*win32*" />
+				<exclude name="jarbundler-*.jar" />
+				<exclude name="xercesImpl.jar" />
+				<exclude name="Launch4j/**" />
+			</fileset>
+		</path>
+		<fileset id="jar.runtime.dependencies" dir="${lib.dir}">
+			<include name="**/*.jar" />
+			<exclude name="**/*win32*" />
+			<exclude name="jarbundler-*.jar" />
+			<exclude name="xercesImpl.jar" />
+			<exclude name="Launch4j/**" />
+		</fileset>
+		<fileset id="runtime.dependencies" dir="${lib.dir}">
+			<include name="**/*swt*.jnilib" />
+		</fileset>
+		<property name="manifest.file" value="mac.os.x.MANIFEST.MF" />
+		<path id="jarbundler.classpath">
+			<fileset dir="${lib.dir}">
+				<include name="**/jarbundler-*.jar" />
+				<include name="**/xercesImpl.jar" />
+			</fileset>
+		</path>
+		<property name="app.classpath.arg" value="$JAVAROOT/groupscribbles.jar, $JAVAROOT/tspaces.jar, $JAVAROOT/org.eclipse.swt.cocoa.macosx.x86_64_3.6.1.v3655c.jar, $JAVAROOT/org.eclipse.jface_3.2.1.M20060908-1000.jar, $JAVAROOT/org.eclipse.equinox.common_3.2.0.v20060603.jar, $JAVAROOT/org.eclipse.core.commands_3.2.0.I20060605-1400.jar" />
+		<property name="app.file.name.root" value="User Game" />
+		<property name="app.file.name" value="${app.file.name.root}.app" />
+		<property name="app.file" value="${release.build.dir}/${app.file.name}" />
+		<property name="app.icon.file" value="User Game.icns" />
+	</target>
+
+	<target name="clean" depends="init">
+		<delete dir="${bytecode.build.dir}" />
+		<delete dir="${jar.build.dir}" />
+		<delete dir="${release.build.dir}" />
+	</target>
+
+	<target name="compile" depends="init">
+		<mkdir dir="${bytecode.build.dir}" />
+		<javac srcdir="${src.dir}" destdir="${bytecode.build.dir}" classpathref="compile.classpath" debug="on" />
+		<copy todir="${bytecode.build.dir}">
+			<fileset dir="${res.dir}">
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="build.jar" depends="compile">
+		<mkdir dir="${jar.build.dir}" />
+		<jar destfile="${jar.file}" basedir="${bytecode.build.dir}" manifest="${manifest.file}" />
+	</target>
+
+	<target name="build.exe" depends="build.jar" if="os.is.windows">
+		<mkdir dir="${release.build.dir}" />
+		<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpathref="launch4j.classpath" />
+		<launch4j>
+			<config headertype="gui" outfile="${exe.file}" dontwrapjar="true" icon="${exe.icon.file}" jarpath="${release.lib.build.dir.name}/${jar.file.name}">
+				<classPath mainClass="edu.vt.cs.research.usergame.UserGame">
+					<cp>Libraries/groupscribbles.jar</cp>
+					<cp>Libraries/tspaces.jar</cp>
+					<cp>Libraries/org.eclipse.swt.win32.win32.x86_3.6.1.v3655c.jar</cp>
+					<cp>Libraries/org.eclipse.jface_3.2.1.M20060908-1000.jar</cp>
+					<cp>Libraries/org.eclipse.equinox.common_3.2.0.v20060603.jar</cp>
+					<cp>Libraries/org.eclipse.core.commands_3.2.0.I20060605-1400.jar</cp>
+					<cp>Libraries/swtmiglayout15.jar</cp>
+				</classPath>
+				<jre minversion="1.5.0">
+					<opt>-Djava.library.path=Libraries</opt>
+					<opt>-Djava.util.logging.config.file=logging.properties</opt>
+				</jre>
+			</config>
+		</launch4j>
+	</target>
+
+	<target name="build.app" depends="build.jar" if="os.is.mac.os.x">
+		<mkdir dir="${release.build.dir}" />
+		<taskdef name="jarbundler" classname="net.sourceforge.jarbundler.JarBundler" classpathref="jarbundler.classpath" />
+		<jarbundler dir="${release.build.dir}" name="User Game" mainclass="edu.vt.cs.research.usergame.UserGame" icon="${app.icon.file}" jvmversion="1.5+" startOnMainThread="true" vmoptions="-Djava.library.path=. -Djava.util.logging.config.file=${logging.configuration.file.name}" workingdirectory="$APP_PACKAGE/Contents/Resources">
+			<jarfileset file="${jar.file}" />
+			<jarfileset refid="jar.runtime.dependencies" />
+			<resourcefileset dir="${lib.dir}">
+				<include name="**/*.jnilib" />
+			</resourcefileset>
+			<resourcefileset file="${logging.configuration.file}" />
+		</jarbundler>
+	</target>
+
+	<target name="build.windows.package" depends="build.exe" if="os.is.windows">
+		<copy todir="${release.build.dir}" file="${logging.configuration.file}" />
+		<mkdir dir="${release.lib.build.dir}" />
+		<copy todir="${release.lib.build.dir}" file="${jar.file}" />
+		<copy todir="${release.lib.build.dir}">
+			<fileset refid="jar.runtime.dependencies" />
+			<fileset refid="runtime.dependencies" />
+		</copy>
+	</target>
+
+	<target name="build.mac.os.x.package" depends="build.app" if="os.is.mac.os.x">
+	</target>
+
+	<target name="package" depends="build.windows.package, build.mac.os.x.package">
+	</target>
+
+	<target name="default" depends="package">
+	</target>
+
+</project>

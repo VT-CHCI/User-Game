@@ -1,0 +1,1 @@
+main-class: edu.vt.cs.research.usergame.UserGame
