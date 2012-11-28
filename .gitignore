@@ -4,3 +4,12 @@
 *.jar
 *.war
 *.ear
+*.zip
+*.app
+
+*.exe
+*.obj
+*.a
+CVS/
+
+.DS_Store
